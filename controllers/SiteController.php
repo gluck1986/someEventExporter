@@ -12,11 +12,11 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => \yii\web\ErrorAction::class,
             ]
         ];
     }
@@ -26,7 +26,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
     }
@@ -36,14 +36,19 @@ class SiteController extends Controller
      * @param string $exportType
      * @return string
      */
-    public function actionExport($exportType)
+    public function actionExport(string $exportType): string
     {
+        ini_set('max_execution_time', '0');
+        ini_set('memory_limit', '2048M');
         $model = new HistorySearch();
+
+        $filename = 'history';
+        $filename .= '-' . time();
 
         return $this->render('export', [
             'dataProvider' => $model->search(Yii::$app->request->queryParams),
             'exportType' => $exportType,
-            'model' => $model
+            'filename' => $filename
         ]);
     }
 }

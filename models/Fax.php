@@ -23,16 +23,16 @@ use yii\db\ActiveRecord;
  */
 class Fax extends ActiveRecord
 {
-    const DIRECTION_INCOMING = 0;
-    const DIRECTION_OUTGOING = 1;
+    public const DIRECTION_INCOMING = 0;
+    public const DIRECTION_OUTGOING = 1;
 
-    const TYPE_POA_ATC = 'poa_atc';
-    const TYPE_REVOCATION_NOTICE = 'revocation_notice';
+    public const TYPE_POA_ATC = 'poa_atc';
+    public const TYPE_REVOCATION_NOTICE = 'revocation_notice';
 
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'fax';
     }
@@ -40,7 +40,7 @@ class Fax extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['type'], 'required'],
@@ -54,7 +54,7 @@ class Fax extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -68,15 +68,15 @@ class Fax extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
-    public static function getTypeTexts()
+    public static function getTypeTexts(): array
     {
         return [
             self::TYPE_POA_ATC => Yii::t('app', 'POA/ATC'),
@@ -85,11 +85,10 @@ class Fax extends ActiveRecord
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function getTypeText()
+    public function getTypeText(): string
     {
-        return self::getTypeTexts()[$this->type] ?? $this->type;
+        return self::getTypeTexts()[$this->type] ?? (string)$this->type;
     }
-
 }

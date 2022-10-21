@@ -17,7 +17,7 @@ use yii\helpers\Html;
 
         <?php if (isset($bodyDatetime)): ?>
             <span>
-       <?= \app\widgets\DateTime\DateTime::widget(['dateTime' => $bodyDatetime]) ?>
+            <?= \app\widgets\DateTime\DateTime::widget(['dateTime' => $bodyDatetime]) ?>
     </span>
         <?php endif; ?>
     </div>
@@ -34,7 +34,7 @@ use yii\helpers\Html;
 
 <?php if (isset($footer) || isset($footerDatetime)): ?>
     <div class="bg-warning">
-        <?php echo isset($footer) ? $footer : '' ?>
+        <?php echo $footer ?? '' ?>
         <?php if (isset($footerDatetime)): ?>
             <span><?= \app\widgets\DateTime\DateTime::widget(['dateTime' => $footerDatetime]) ?></span>
         <?php endif; ?>

@@ -20,7 +20,9 @@ use yii\widgets\Pjax;
 
         <div class="pull-sm-right">
             <?php if (!empty($linkExport)) {
-                echo Html::a(Yii::t('app', 'CSV'), $linkExport,
+                echo Html::a(
+                    Yii::t('app', 'CSV'),
+                    $linkExport,
                     [
                         'class' => 'btn btn-success',
                         'data-pjax' => 0

@@ -2,23 +2,19 @@
 
 /**
  * @var $this yii\web\View
- * @var $model \app\models\History
+ * @var $model History
  * @var $dataProvider yii\data\ActiveDataProvider
  * @var $exportType string
+ * @var string $filename
  */
 
 use app\models\History;
-use app\widgets\Export\Export;
 use app\widgets\HistoryList\helpers\HistoryListHelper;
+use kartik\export\ExportMenu;
 
-$filename = 'history';
-$filename .= '-' . time();
-
-ini_set('max_execution_time', 0);
-ini_set('memory_limit', '2048M');
-?>
-
-<?= Export::widget([
+echo ExportMenu::widget([
+    'triggerDownload' => true,
+    'showColumnSelector' => false,
     'dataProvider' => $dataProvider,
     'columns' => [
         [

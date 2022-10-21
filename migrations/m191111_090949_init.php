@@ -107,8 +107,6 @@ class m191111_090949_init extends Migration
 
         $this->addForeignKey('fk_task__user_id', 'task', 'user_id', 'user', 'id', 'RESTRICT', 'CASCADE');
         $this->addForeignKey('fk_task__customer_id', 'task', 'customer_id', 'customer', 'id', 'RESTRICT', 'CASCADE');
-
-
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace app\widgets\HistoryList;
 
 use app\models\search\HistorySearch;
-use app\widgets\Export\Export;
+use kartik\export\ExportMenu;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -32,7 +32,7 @@ class HistoryList extends Widget
     {
         $params = Yii::$app->getRequest()->getQueryParams();
         $params = ArrayHelper::merge([
-            'exportType' => Export::FORMAT_CSV
+            'exportType' => ExportMenu::FORMAT_CSV
         ], $params);
         $params[0] = 'site/export';
 

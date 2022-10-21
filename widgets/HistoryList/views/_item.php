@@ -20,7 +20,7 @@ switch ($model->event) {
             'body' => HistoryListHelper::getBodyByModel($model),
             'iconClass' => 'fa-check-square bg-yellow',
             'footerDatetime' => $model->ins_ts,
-            'footer' => isset($task->customerCreditor->name) ? "Creditor: " . $task->customerCreditor->name : ''
+            'footer' => $task && isset($task->customerCreditor->name) ? 'Creditor: ' . $task->customerCreditor->name : ''
         ]);
         break;
     case History::EVENT_INCOMING_SMS:
@@ -28,13 +28,13 @@ switch ($model->event) {
         echo $this->render('_item_common', [
             'user' => $model->user,
             'body' => HistoryListHelper::getBodyByModel($model),
-            'footer' => $model->sms->direction == Sms::DIRECTION_INCOMING ?
+            'footer' => $model->sms->direction === Sms::DIRECTION_INCOMING ?
                 Yii::t('app', 'Incoming message from {number}', [
                     'number' => $model->sms->phone_from ?? ''
                 ]) : Yii::t('app', 'Sent message to {number}', [
                     'number' => $model->sms->phone_to ?? ''
                 ]),
-            'iconIncome' => $model->sms->direction == Sms::DIRECTION_INCOMING,
+            'iconIncome' => $model->sms->direction === Sms::DIRECTION_INCOMING,
             'footerDatetime' => $model->ins_ts,
             'iconClass' => 'icon-sms bg-dark-blue'
         ]);
@@ -81,7 +81,7 @@ switch ($model->event) {
     case History::EVENT_OUTGOING_CALL:
         /** @var Call $call */
         $call = $model->call;
-        $answered = $call && $call->status == Call::STATUS_ANSWERED;
+        $answered = $call && $call->status === Call::STATUS_ANSWERED;
 
         echo $this->render('_item_common', [
             'user' => $model->user,
@@ -90,7 +90,7 @@ switch ($model->event) {
             'footerDatetime' => $model->ins_ts,
             'footer' => isset($call->applicant) ? "Called <span>{$call->applicant->name}</span>" : null,
             'iconClass' => $answered ? 'md-phone bg-green' : 'md-phone-missed bg-red',
-            'iconIncome' => $answered && $call->direction == Call::DIRECTION_INCOMING
+            'iconIncome' => $answered && $call->direction === Call::DIRECTION_INCOMING
         ]);
         break;
     default:
