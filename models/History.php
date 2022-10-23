@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use app\models\traits\ObjectNameTrait;
+use app\models\activeQuery\MorphToOneActiveQuery;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -25,34 +25,42 @@ use yii\db\ActiveRecord;
  * @property Customer $customer
  * @property User $user
  *
- * @property Task $task
- * @property Sms $sms
- * @property Call $call
+ * @property ActiveRecord|null $morphObject
  */
 class History extends ActiveRecord
 {
-    use ObjectNameTrait;
+    public const DETAIL_CHANGED_ATTRIBUTES_PROPERTY = 'changedAttributes';
+    public const DETAIL_DATA_PROPERTY = 'data';
 
-    const EVENT_CREATED_TASK = 'created_task';
-    const EVENT_UPDATED_TASK = 'updated_task';
-    const EVENT_COMPLETED_TASK = 'completed_task';
+    public const EVENT_CREATED_TASK = 'created_task';
+    public const EVENT_UPDATED_TASK = 'updated_task';
+    public const EVENT_COMPLETED_TASK = 'completed_task';
 
-    const EVENT_INCOMING_SMS = 'incoming_sms';
-    const EVENT_OUTGOING_SMS = 'outgoing_sms';
+    public const EVENT_INCOMING_SMS = 'incoming_sms';
+    public const EVENT_OUTGOING_SMS = 'outgoing_sms';
 
-    const EVENT_INCOMING_CALL = 'incoming_call';
-    const EVENT_OUTGOING_CALL = 'outgoing_call';
+    public const EVENT_INCOMING_CALL = 'incoming_call';
+    public const EVENT_OUTGOING_CALL = 'outgoing_call';
 
-    const EVENT_INCOMING_FAX = 'incoming_fax';
-    const EVENT_OUTGOING_FAX = 'outgoing_fax';
+    public const EVENT_INCOMING_FAX = 'incoming_fax';
+    public const EVENT_OUTGOING_FAX = 'outgoing_fax';
 
-    const EVENT_CUSTOMER_CHANGE_TYPE = 'customer_change_type';
-    const EVENT_CUSTOMER_CHANGE_QUALITY = 'customer_change_quality';
+    public const EVENT_CUSTOMER_CHANGE_TYPE = 'customer_change_type';
+    public const EVENT_CUSTOMER_CHANGE_QUALITY = 'customer_change_quality';
+
+    protected $_objectClasses = [
+        Customer::class,
+        Sms::class,
+        Task::class,
+        Call::class,
+        Fax::class,
+        User::class,
+    ];
 
     /**
      * @inheritdoc
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%history}}';
     }
@@ -60,7 +68,7 @@ class History extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['ins_ts'], 'safe'],
@@ -76,7 +84,7 @@ class History extends ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => Yii::t('app', 'ID'),
@@ -91,10 +99,15 @@ class History extends ActiveRecord
         ];
     }
 
+    public function getMorphObject(): ActiveQuery
+    {
+        return MorphToOneActiveQuery::make('object', 'object_id', $this->_objectClasses);
+    }
+
     /**
      * @return ActiveQuery
      */
-    public function getCustomer()
+    public function getCustomer(): ActiveQuery
     {
         return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
@@ -102,15 +115,15 @@ class History extends ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getUser()
+    public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
-    public static function getEventTexts()
+    public static function getEventTexts(): array
     {
         return [
             self::EVENT_CREATED_TASK => Yii::t('app', 'Task created'),
@@ -132,60 +145,91 @@ class History extends ActiveRecord
     }
 
     /**
-     * @param $event
-     * @return mixed
+     * @param string $event
+     * @return string
      */
-    public static function getEventTextByEvent($event)
+    public static function getEventTextByEvent(string $event): string
     {
         return static::getEventTexts()[$event] ?? $event;
     }
 
     /**
-     * @return mixed|string
+     * @return string
      */
-    public function getEventText()
+    public function getEventText(): string
     {
         return static::getEventTextByEvent($this->event);
     }
 
 
-    /**
-     * @param $attribute
-     * @return null
-     */
-    public function getDetailChangedAttribute($attribute)
+    public function getParsedDetail(): ?\stdClass
     {
-        $detail = json_decode($this->detail);
-        return isset($detail->changedAttributes->{$attribute}) ? $detail->changedAttributes->{$attribute} : null;
+        try {
+            $detail = json_decode($this->detail);
+            if (!($detail instanceof \stdClass)) {
+                return null;
+            }
+            return $detail;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $attribute
+     * @return \stdClass|null
+     */
+    public function getDetailChangedAttribute(string $attribute): ?\stdClass
+    {
+        $detail = $this->getParsedDetail();
+        if (!property_exists($detail, self::DETAIL_CHANGED_ATTRIBUTES_PROPERTY)) {
+            return null;
+        }
+        if (!property_exists($detail->{self::DETAIL_CHANGED_ATTRIBUTES_PROPERTY}, $attribute)) {
+            return null;
+        }
+        $attributeValue = $detail->{self::DETAIL_CHANGED_ATTRIBUTES_PROPERTY}->{$attribute} ?? null;
+        if (!($attributeValue instanceof \stdClass)) {
+            return null;
+        }
+        return $attributeValue;
     }
 
     /**
      * @param $attribute
-     * @return null
+     * @return string|null
      */
-    public function getDetailOldValue($attribute)
+    public function getDetailOldValue($attribute):? string
     {
         $detail = $this->getDetailChangedAttribute($attribute);
-        return isset($detail->old) ? $detail->old : null;
+
+        return isset($detail->old) ? (string)$detail->old : null;
     }
 
     /**
      * @param $attribute
-     * @return null
+     * @return string|null
      */
-    public function getDetailNewValue($attribute)
+    public function getDetailNewValue($attribute):? string
     {
         $detail = $this->getDetailChangedAttribute($attribute);
-        return isset($detail->new) ? $detail->new : null;
+
+        return isset($detail->new) ? (string)$detail->new : null;
     }
 
     /**
-     * @param $attribute
-     * @return null
+     * @param string $attribute
+     * @return mixed
      */
-    public function getDetailData($attribute)
+    public function getDetailData(string $attribute)
     {
-        $detail = json_decode($this->detail);
-        return isset($detail->data->{$attribute}) ? $detail->data->{$attribute} : null;
+        $detail = $this->getParsedDetail();
+        if (!property_exists($detail, self::DETAIL_DATA_PROPERTY)) {
+            return null;
+        }
+        if (!property_exists($detail->{self::DETAIL_DATA_PROPERTY}, $attribute)) {
+            return null;
+        }
+        return $detail->{self::DETAIL_DATA_PROPERTY}->{$attribute} ?? null;
     }
 }

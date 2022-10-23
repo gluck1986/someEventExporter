@@ -9,14 +9,13 @@ use yii\data\ActiveDataProvider;
 /**
  * HistorySearch represents the model behind the search form about `app\models\History`.
  *
- * @property array $objects
  */
 class HistorySearch extends History
 {
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }
@@ -24,10 +23,10 @@ class HistorySearch extends History
     /**
      * @inheritdoc
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
+        return (new Model())->scenarios();
     }
 
     /**
@@ -37,7 +36,7 @@ class HistorySearch extends History
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search(array $params): ActiveDataProvider
     {
         $query = History::find();
 
@@ -66,10 +65,7 @@ class HistorySearch extends History
         $query->with([
             'customer',
             'user',
-            'sms',
-            'task',
-            'call',
-            'fax',
+            'morphObject'
         ]);
 
         return $dataProvider;

@@ -7,7 +7,10 @@ use yii\db\Migration;
  */
 class m191111_115918_init_sql extends Migration
 {
-    private $initTables = [
+    /**
+     * @var string[]
+     */
+    private $_initTables = [
         'customer',
         'user',
         'history',
@@ -23,16 +26,11 @@ class m191111_115918_init_sql extends Migration
      */
     public function safeUp()
     {
-        foreach ($this->initTables as $table) {
+        foreach ($this->_initTables as $table) {
             foreach (file(__DIR__ . '/init/' . $table . '.sql') as $sql) {
-                $this->execute($sql);
+                $this->execute(trim($sql));
             }
         }
-    }
-
-    public function execute($sql, $params = [])
-    {
-        return trim($sql) && parent::execute($sql, $params);
     }
 
     /**
@@ -40,9 +38,8 @@ class m191111_115918_init_sql extends Migration
      */
     public function safeDown()
     {
-        foreach (array_reverse($this->initTables) as $table) {
+        foreach (array_reverse($this->_initTables) as $table) {
             $this->delete($table);
         }
     }
 }
-
