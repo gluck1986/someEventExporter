@@ -1,7 +1,16 @@
 parameters:
     phpVersion: 70100
-    level: 6
+    level: 1
     paths:
         - .
     excludePaths:
         - vendor
+    ignoreErrors:
+    		- '#Variable \$this might not be defined.#'
+    		- '#Variable \$model might not be defined.#'
+    		- '#Variable \$dataProvider might not be defined.#'
+    		- '#Call to static method t\(\) on an unknown class Yii.#'
+    		- '#Variable \$body might not be defined.#'
+    		- '#Variable \$iconClass might not be defined.#'
+    		- '#Access to static property \$app on an unknown class Yii.#'
+    		- '#Variable \$content might not be defined.#'

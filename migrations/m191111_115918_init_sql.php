@@ -7,6 +7,9 @@ use yii\db\Migration;
  */
 class m191111_115918_init_sql extends Migration
 {
+    /**
+     * @var string[]
+     */
     private $_initTables = [
         'customer',
         'user',
@@ -25,14 +28,9 @@ class m191111_115918_init_sql extends Migration
     {
         foreach ($this->_initTables as $table) {
             foreach (file(__DIR__ . '/init/' . $table . '.sql') as $sql) {
-                $this->execute($sql);
+                $this->execute(trim($sql));
             }
         }
-    }
-
-    public function execute($sql, $params = [])
-    {
-        return trim($sql) && parent::execute($sql, $params);
     }
 
     /**

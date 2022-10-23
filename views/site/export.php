@@ -9,12 +9,10 @@
  */
 
 use app\models\History;
+use app\widgets\Export\ExportCsvStream;
 use app\widgets\HistoryList\helpers\HistoryListHelper;
-use kartik\export\ExportMenu;
 
-echo ExportMenu::widget([
-    'triggerDownload' => true,
-    'showColumnSelector' => false,
+echo ExportCsvStream::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         [
