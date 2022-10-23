@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\models\activeQuery\MorphToOneActiveQuery;
 use app\models\traits\ObjectNameTrait;
 use Yii;
 use yii\db\ActiveQuery;
@@ -25,6 +26,7 @@ use yii\db\ActiveRecord;
  * @property Customer $customer
  * @property User $user
  *
+ * @property ActiveRecord|null $parsedObject
  * @property Task|null $task
  * @property Sms|null $sms
  * @property Call|null $call
@@ -51,6 +53,15 @@ class History extends ActiveRecord
 
     public const EVENT_CUSTOMER_CHANGE_TYPE = 'customer_change_type';
     public const EVENT_CUSTOMER_CHANGE_QUALITY = 'customer_change_quality';
+
+    protected $_objectClasses = [
+        Customer::class,
+        Sms::class,
+        Task::class,
+        Call::class,
+        Fax::class,
+        User::class,
+    ];
 
     /**
      * @inheritdoc
@@ -92,6 +103,11 @@ class History extends ActiveRecord
             'detail' => Yii::t('app', 'Detail'),
             'user_id' => Yii::t('app', 'User ID'),
         ];
+    }
+
+    public function getParsedObject(): ActiveQuery
+    {
+        return MorphToOneActiveQuery::make('object', 'object_id', $this->_objectClasses);
     }
 
     /**

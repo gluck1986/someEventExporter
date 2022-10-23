@@ -2,6 +2,7 @@
 
 namespace app\widgets\HistoryList;
 
+use app\models\History;
 use app\models\search\HistorySearch;
 use kartik\export\ExportMenu;
 use yii\base\Widget;
@@ -19,7 +20,6 @@ class HistoryList extends Widget
         $model = new HistorySearch();
 
         return $this->render('main', [
-            'model' => $model,
             'linkExport' => $this->getLinkExport(),
             'dataProvider' => $model->search(Yii::$app->request->queryParams)
         ]);

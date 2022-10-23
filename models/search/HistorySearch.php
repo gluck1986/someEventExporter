@@ -70,6 +70,7 @@ class HistorySearch extends History
             'task',
             'call',
             'fax',
+            'parsedObject'
         ]);
 
         return $dataProvider;
