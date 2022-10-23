@@ -20,9 +20,9 @@ class CallStrategy implements ItemStrategy
      */
     public function getContent($model, $key, int $index, ListView $listView): string
     {
-        $call = $model->parsedObject;
+        $call = $model->morphObject;
         if ($call !== null && ! ($call instanceof Call)) {
-            throw new Exception('parsedObject must be Call, given: ' . get_class($call));
+            throw new Exception('morphObject must be Call, given: ' . get_class($call));
         }
 
         $answered = $call && $call->status === Call::STATUS_ANSWERED;

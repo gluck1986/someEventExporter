@@ -16,14 +16,14 @@ class HistoryListHelper
             case History::EVENT_CREATED_TASK:
             case History::EVENT_COMPLETED_TASK:
             case History::EVENT_UPDATED_TASK:
-                $task = $model->parsedObject;
+                $task = $model->morphObject;
                 if (!($task instanceof Task)) {
                     return $model->eventText;
                 }
                 return "$model->eventText: " . ($task->title ?? '');
             case History::EVENT_INCOMING_SMS:
             case History::EVENT_OUTGOING_SMS:
-                $sms = $model->parsedObject;
+                $sms = $model->morphObject;
                 if (!($sms instanceof Sms)) {
                     return '';
                 }
@@ -38,7 +38,7 @@ class HistoryListHelper
                     (Customer::getQualityTextByQuality($model->getDetailNewValue('quality')) ?? 'not set');
             case History::EVENT_INCOMING_CALL:
             case History::EVENT_OUTGOING_CALL:
-                $call = $model->parsedObject;
+                $call = $model->morphObject;
                 if (!($call instanceof Call)) {
                     return '<i>Deleted</i> ';
                 }

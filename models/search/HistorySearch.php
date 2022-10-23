@@ -65,7 +65,7 @@ class HistorySearch extends History
         $query->with([
             'customer',
             'user',
-            'parsedObject'
+            'morphObject'
         ]);
 
         return $dataProvider;

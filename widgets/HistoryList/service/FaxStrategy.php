@@ -22,9 +22,9 @@ class FaxStrategy implements ItemStrategy
      */
     public function getContent($model, $key, int $index, ListView $listView): string
     {
-        $fax = $model->parsedObject;
+        $fax = $model->morphObject;
         if ($fax !== null && ! ($fax instanceof Fax)) {
-            throw new Exception('parsedObject must be Fax, given: ' . get_class($fax));
+            throw new Exception('morphObject must be Fax, given: ' . get_class($fax));
         }
 
         return $listView->render('@app/widgets/HistoryList/views/_item_common', [

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use app\models\activeQuery\MorphToOneActiveQuery;
-use app\models\traits\ObjectNameTrait;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -26,7 +25,7 @@ use yii\db\ActiveRecord;
  * @property Customer $customer
  * @property User $user
  *
- * @property ActiveRecord|null $parsedObject
+ * @property ActiveRecord|null $morphObject
  */
 class History extends ActiveRecord
 {
@@ -100,7 +99,7 @@ class History extends ActiveRecord
         ];
     }
 
-    public function getParsedObject(): ActiveQuery
+    public function getMorphObject(): ActiveQuery
     {
         return MorphToOneActiveQuery::make('object', 'object_id', $this->_objectClasses);
     }

@@ -21,9 +21,9 @@ class SmsStrategy implements ItemStrategy
      */
     public function getContent($model, $key, int $index, ListView $listView): string
     {
-        $sms = $model->parsedObject;
+        $sms = $model->morphObject;
         if ($sms !== null && ! ($sms instanceof Sms)) {
-            throw new Exception('parsedObject must be Sms, given: ' . get_class($sms));
+            throw new Exception('morphObject must be Sms, given: ' . get_class($sms));
         }
 
         return  $listView->render('@app/widgets/HistoryList/views/_item_common', [

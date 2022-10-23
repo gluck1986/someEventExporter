@@ -21,9 +21,9 @@ class TaskStrategy implements ItemStrategy
      */
     public function getContent($model, $key, int $index, ListView $listView): string
     {
-        $task = $model->parsedObject;
+        $task = $model->morphObject;
         if ($task !== null && ! ($task instanceof Task)) {
-            throw new Exception('parsedObject must be Task, given: ' . get_class($task));
+            throw new Exception('morphObject must be Task, given: ' . get_class($task));
         }
 
         return $listView->render('@app/widgets/HistoryList/views/_item_common', [
