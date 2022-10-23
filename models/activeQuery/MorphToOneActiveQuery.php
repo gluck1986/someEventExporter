@@ -127,7 +127,7 @@ class MorphToOneActiveQuery extends ActiveQuery
      * @param array $idsGroups
      * @return array<class-string<ActiveRecord>, array<array-key, ActiveRecord>>
      */
-    public function getModels(array $idsGroups ): array
+    public function getModels(array $idsGroups): array
     {
         $resultGroups = [];
         /** @var class-string<ActiveRecord> $class */

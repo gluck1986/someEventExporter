@@ -1,6 +1,7 @@
 <?php
 
 use app\models\search\HistorySearch;
+use app\widgets\HistoryList\service\ItemStrategyAdapter;
 use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\widgets\ListView;
@@ -36,7 +37,7 @@ use yii\widgets\Pjax;
 
 <?php echo ListView::widget([
     'dataProvider' => $dataProvider,
-    'itemView' => '_item',
+    'itemView' => ItemStrategyAdapter::defaultInstance(),
     'options' => [
         'tag' => 'ul',
         'class' => 'list-group'

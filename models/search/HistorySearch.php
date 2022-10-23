@@ -9,7 +9,6 @@ use yii\data\ActiveDataProvider;
 /**
  * HistorySearch represents the model behind the search form about `app\models\History`.
  *
- * @property array $objects
  */
 class HistorySearch extends History
 {
@@ -66,10 +65,6 @@ class HistorySearch extends History
         $query->with([
             'customer',
             'user',
-            'sms',
-            'task',
-            'call',
-            'fax',
             'parsedObject'
         ]);
 

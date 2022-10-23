@@ -27,14 +27,9 @@ use yii\db\ActiveRecord;
  * @property User $user
  *
  * @property ActiveRecord|null $parsedObject
- * @property Task|null $task
- * @property Sms|null $sms
- * @property Call|null $call
  */
 class History extends ActiveRecord
 {
-    use ObjectNameTrait;
-
     public const DETAIL_CHANGED_ATTRIBUTES_PROPERTY = 'changedAttributes';
     public const DETAIL_DATA_PROPERTY = 'data';
 
