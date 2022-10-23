@@ -22,7 +22,7 @@ class SmsStrategy implements ItemStrategy
     public function getContent($model, $key, int $index, ListView $listView): string
     {
         $sms = $model->parsedObject;
-        if (! ($sms instanceof Sms)) {
+        if ($sms !== null && ! ($sms instanceof Sms)) {
             throw new Exception('parsedObject must be Sms, given: ' . get_class($sms));
         }
 

@@ -22,7 +22,7 @@ class TaskStrategy implements ItemStrategy
     public function getContent($model, $key, int $index, ListView $listView): string
     {
         $task = $model->parsedObject;
-        if (! ($task instanceof Task)) {
+        if ($task !== null && ! ($task instanceof Task)) {
             throw new Exception('parsedObject must be Task, given: ' . get_class($task));
         }
 

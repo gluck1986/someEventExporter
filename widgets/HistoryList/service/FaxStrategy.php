@@ -23,7 +23,7 @@ class FaxStrategy implements ItemStrategy
     public function getContent($model, $key, int $index, ListView $listView): string
     {
         $fax = $model->parsedObject;
-        if (! ($fax instanceof Fax)) {
+        if ($fax !== null && ! ($fax instanceof Fax)) {
             throw new Exception('parsedObject must be Fax, given: ' . get_class($fax));
         }
 

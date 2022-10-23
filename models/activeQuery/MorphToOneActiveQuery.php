@@ -143,27 +143,41 @@ class MorphToOneActiveQuery extends ActiveQuery
      * @param string $name
      * @return void
      */
-    public function populatePrimary(array $primaryModels, array $resultGroups, string $name): void
+    public function populatePrimary(array &$primaryModels, array $resultGroups, string $name): void
     {
         foreach (array_keys($primaryModels) as $modelIndex) {
             $morphName = $primaryModels[$modelIndex][$this->relationField] ?? '';
             $morphClass = $this->relationMap[$morphName] ?? null;
             if ($morphClass === null) {
+                $this->setMorphModel($primaryModels, $modelIndex, $name, null);
                 continue;
             }
             $morphId = $primaryModels[$modelIndex][$this->idField] ?? null;
             if ($morphId === null) {
+                $this->setMorphModel($primaryModels, $modelIndex, $name, null);
                 continue;
             }
             $morphObject = $resultGroups[$morphClass][$morphId] ?? null;
             if ($morphObject === null) {
+                $this->setMorphModel($primaryModels, $modelIndex, $name, null);
                 continue;
             }
-            if ($primaryModels[$modelIndex] instanceof ActiveRecordInterface) {
-                $primaryModels[$modelIndex]->populateRelation($name, $morphObject);
-            } else {
-                $primaryModels[$modelIndex][$name] = $morphObject;
-            }
+            $this->setMorphModel($primaryModels, $modelIndex, $name, $morphObject);
+        }
+    }
+
+    /**
+     * @param array $primaryModels
+     * @param $modelIndex
+     * @param string $name
+     * @param ActiveRecord|null $morphObject
+     */
+    public function setMorphModel(array &$primaryModels, $modelIndex, string $name, ?ActiveRecord $morphObject): void
+    {
+        if ($primaryModels[$modelIndex] instanceof ActiveRecordInterface) {
+            $primaryModels[$modelIndex]->populateRelation($name, $morphObject);
+        } else {
+            $primaryModels[$modelIndex][$name] = $morphObject;
         }
     }
 }
